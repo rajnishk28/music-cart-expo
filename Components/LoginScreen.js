@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity,Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import baseUrl from './Api';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const[loading,SetLoading]=useState(false);
+  const [loading, SetLoading] = useState(false);
+  const[message, SetMessage] = useState('' );
 
   const handleLogin = () => {
     SetLoading(true);
-    setTimeout(() => {
-        console.log("wait for 2 second");
-        console.log("Username:", username);
-        console.log("Password:", password);
-        SetLoading(false);
-      }, 2000);
-      navigation.navigate('Home');
+    axios.post(`${baseUrl}/user/login`, { email, password }).then((response) => {
+      SetLoading(false);
+      alert('Login successful');
+      if(response.status === 200){
+        navigation.navigate('Home');
+      };
+    }).catch((error) => {
+      SetLoading(false);
+      console.log(error);
+      SetMessage(error.response.data.message);
+    });
+    
   };
 
   return (
@@ -24,9 +32,9 @@ const LoginScreen = () => {
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        onChangeText={setUsername}
-        value={username}
+        placeholder="Email"
+        onChangeText={setEmail}
+        value={email}
       />
       <TextInput
         style={styles.input}
@@ -35,15 +43,16 @@ const LoginScreen = () => {
         onChangeText={setPassword}
         value={password}
       />
-     
+      {message ? <Text style={{ color: 'red' }}>{message}</Text> : null}
+
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>{loading?"loading":"Login"}</Text>
+        <Text style={styles.buttonText}>{loading ? "loading" : "Login"}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('SignUp')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.buttonText}>SignUp</Text>
       </TouchableOpacity>
-     
+
     </View>
   );
 };
@@ -51,15 +60,15 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width:"100%",
+    width: "100%",
     justifyContent: 'center',
     alignItems: 'center',
-  
+
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    color:"#ffffff"
+    color: "#ffffff"
   },
   input: {
     width: 300,
@@ -72,10 +81,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'blue',
-    width:150,
+    width: 150,
     padding: 10,
     borderRadius: 5,
-    marginTop:20
+    marginTop: 20
   },
   buttonText: {
     color: '#fff',

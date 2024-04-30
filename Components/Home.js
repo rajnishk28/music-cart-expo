@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, Dimensions, Button } from 'react-native';
 import axios from 'axios';
 import baseUrl from './Api';
 
@@ -7,54 +7,76 @@ const Home = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch data from API using Axios
     axios.get(`${baseUrl}/product/getall`)
       .then(response => {
-        // Set products state with fetched data
-        setProducts(response.data);
+        setProducts(response.data.products);
       })
       .catch(error => console.error('Error fetching data:', error));
-  }, []); // Empty dependency array ensures useEffect runs only once
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      {products.map(product => (
-        <View key={product.id} style={styles.productContainer}>
-          <Image
-            source={{ uri: product.image }} // Assuming product object has image field
-            style={styles.image}
-          />
-          <Text style={styles.name}>{product.name}</Text>
-          <Text style={styles.price}>Price: {product.price}</Text>
-          <Text style={styles.description}>{product.description}</Text>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <Text style={styles.title}>Products</Text>
+        <View style={styles.productsContainer}>
+          {products.map((ele) => (
+            <View key={ele._id} style={styles.productContainer}>
+              <Image
+                source={{ uri: ele.imageUrl }}
+                style={styles.image}
+              />
+              <Text style={styles.name}>{ele.name}</Text>
+              <Text style={styles.description}>{ele.color}</Text>
+              <Text style={styles.price}>Price: {ele.price}</Text>
+
+              <View style={styles.buttonContainer}>
+                <Button title='Add To Cart' color='#841584' onPress={() => alert('Product added to cart')} />
+                <Button title='Buy Now' color='#841584' onPress={() => alert('Product added to cart')} />
+              </View>
+
+
+            </View>
+
+          ))}
         </View>
-      ))}
+      </ScrollView>
     </View>
   );
 }
 
 export default Home;
 
+const windowWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingBottom: 20,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    marginTop: 20,
+  },
+  productsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
   },
   productContainer: {
+    width: (windowWidth / 2) - 20, // Each product container takes half the screen width minus some margin
     marginBottom: 20,
     alignItems: 'center',
   },
   image: {
-    width: 200,
+    width: '100%',
     height: 200,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     marginBottom: 10,
   },
   name: {
@@ -70,4 +92,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
+
+  buttonContainer: {
+    gap:10,
+    marginTop: 10,
+  },
 });
+
+
