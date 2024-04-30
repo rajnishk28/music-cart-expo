@@ -46,7 +46,7 @@ const LoginScreen = () => {
       {message ? <Text style={{ color: 'red' }}>{message}</Text> : null}
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>{loading ? "loading" : "Login"}</Text>
+        <Text style={styles.buttonText}>{loading ? "Loading" : "Login"}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp')}>
@@ -67,8 +67,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginBottom: 20,
-    color: "#ffffff"
+    marginBottom: 20
   },
   input: {
     width: 300,

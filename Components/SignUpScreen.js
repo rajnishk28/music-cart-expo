@@ -1,26 +1,32 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import baseUrl from "./Api"
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
-  const [name, setName] = useState('');
+  const [fullName, setfullName] = useState('');
   const [email, setEmail] = useState('');
-  const [mobile, setMobile] = useState('');
+  const [contactNumber, setcontactNumber] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup = async() => {
     setLoading(true);
-    setTimeout(() => {
-      console.log("clicked signup");
-      console.log("Name:", name);
-      console.log("Email:", email);
-      console.log("Mobile:", mobile);
-      console.log("Password:", password);
+    await axios.post(`${baseUrl}/user/signup`, {fullName, email,contactNumber, password}).then((res) => {
+      // console.log(res.data);
       setLoading(false);
-    }, 2000);
-    navigation.navigate('Login');
+      if (res.status === 200) {
+        alert("Signup Successfull")
+        navigation.navigate('Login');
+      };
+    }).catch((err) => {
+      console.log(err.response.data);
+      setLoading(false);
+      setMessage(err.response.data.message);
+    })
   };
 
   return (
@@ -29,8 +35,8 @@ const SignUpScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Name"
-        onChangeText={setName}
-        value={name}
+        onChangeText={setfullName}
+        value={fullName}
       />
       <TextInput
         style={styles.input}
@@ -42,8 +48,8 @@ const SignUpScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Mobile Number"
-        onChangeText={setMobile}
-        value={mobile}
+        onChangeText={setcontactNumber}
+        value={contactNumber}
         keyboardType="phone-pad"
       />
       <TextInput
@@ -53,8 +59,9 @@ const SignUpScreen = () => {
         onChangeText={setPassword}
         value={password}
       />
+      {message ? <Text style={{ color: 'red' }}>{message}</Text> : null}
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>{loading ? "loading" : "Signup"}</Text>
+        <Text style={styles.buttonText}>{loading ? "Loading" : "Signup"}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.buttonText}>Login</Text>
