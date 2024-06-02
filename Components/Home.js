@@ -17,7 +17,6 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <Text style={styles.title}>Products</Text>
         <View style={styles.productsContainer}>
           {products.map((ele) => (
             <View key={ele._id} style={styles.productContainer}>

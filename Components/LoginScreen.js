@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import baseUrl from './Api';
 
+
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -49,7 +50,7 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>{loading ? "Loading" : "Login"}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp')}>
+      <TouchableOpacity style={styles.buttonSignup} onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.buttonText}>SignUp</Text>
       </TouchableOpacity>
 
@@ -80,6 +81,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'blue',
+    width: 150,
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20
+  },
+  buttonSignup: {
+    backgroundColor: 'red',
     width: 150,
     padding: 10,
     borderRadius: 5,
